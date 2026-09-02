@@ -1,0 +1,177 @@
+services:
+  keycloack:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.7.2
+    restart: always
+    ports:
+      - 28080:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+    volumes:
+      - ./import:/opt/keycloak/data/import
+    networks:
+      - produtos-network
+    command:
+      - start-dev
+      - --import-realm
+
+  kafka:
+    container_name: kafka_container
+    image: apache/kafka:4.3.1
+    restart: always
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    ports:
+      - "9092:9092"
+    networks:
+      - produtos-network
+
+  eureka-server:
+    container_name: eureka_server
+    image: eureka_server/vitoroliveira2026
+    build: ./eureka-server
+    restart: always
+    ports:
+      - 8761:8761
+    networks:
+      - produtos-network
+
+  mysql-produtos:
+    container_name: mysql-produtos
+    image: mysql:9.7.2
+    restart: always
+    environment:
+      MYSQL_DATABASE: produtosdb
+      MYSQL_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_produtos_data:/var/lib/mysql
+    networks:
+      - produtos-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -prootpassword || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  produtos-service:
+    container_name: produtos-service
+    image: produtos_service/vitoroliveira2026
+    build: ./produtos-api
+    restart: always
+    environment:
+      DB_URL: jdbc:mysql://mysql-produtos:3306/produtosdb
+      DB_USERNAME: root
+      DB_PASSWORD: root123
+      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
+      JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
+      CLIENT_ID: client123
+      EUREKA_URL: http://eureka-server:8761/eureka
+      KAFKA_URL: kafka:9092
+    ports:
+      - 8000:8000
+    networks:
+      - produtos-network
+    depends_on:
+      keycloack:
+        condition: service_started
+      kafka:
+        condition: service_started
+      mysql-produtos:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  mysql-pedidos:
+    container_name: mysql-pedidos
+    image: mysql:9.7.2
+    restart: always
+    environment:
+      MYSQL_DATABASE: pedidosdb
+      MYSQL_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_pedidos_data:/var/lib/mysql
+    networks:
+      - produtos-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -prootpassword || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  pedidos-service:
+    container_name: pedidos-service
+    image: pedidos_service/vitoroliveira2026
+    build: ./pedidos-api
+    restart: always
+    environment:
+      DB_URL: jdbc:mysql://mysql-pedidos:3306/pedidosdb
+      DB_USERNAME: root
+      DB_PASSWORD: root123
+      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
+      JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
+      CLIENT_ID: client123
+      EUREKA_URL: http://eureka-server:8761/eureka
+      KAFKA_URL: kafka:9092
+    ports:
+      - 8100:8100
+    networks:
+      - produtos-network
+    depends_on:
+      keycloack:
+        condition: service_started
+      kafka:
+        condition: service_started
+      mysql-pedidos:
+        condition: service_healthy
+      produtos-service:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+
+  gateway:
+    container_name: api-gateway
+    image: api-gateway/vitoroliveira2026
+    build: ./gateway
+    restart: always
+    environment:
+      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
+      JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
+      EUREKA_URL: http://eureka-server:8761/eureka
+      CLIENT_ID: client123
+    ports:
+      - 8300:8300
+    networks:
+      - produtos-network
+    depends_on:
+      pedidos-service:
+        condition: service_started
+      produtos-service:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+
+networks:
+  produtos-network:
+    driver: bridge
+volumes:
+  mysql_produtos_data:
+  mysql_pedidos_data:

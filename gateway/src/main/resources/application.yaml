@@ -1,0 +1,48 @@
+server:
+  port: 8300
+
+spring:
+  application:
+    name: gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+#          issuer-uri: ${KEYCLOACK_URL}
+          jwk-set-uri: ${JWK_URI}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: usuario_router
+              uri: lb://usuarios-api
+              predicates:
+                - Path=/usuarios-api/**
+              filters:
+                - StripPrefix=1
+            - id: produtos_router
+              uri: lb://produtos-api
+              predicates:
+                - Path=/produtos-api/**
+              filters:
+                - StripPrefix=1
+            - id: pedidos_router
+              uri: lb://pedidos-api
+              predicates:
+                - Path=/pedidos-api/**
+              filters:
+                - StripPrefix=1
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_URL}
+    enabled: true
+keycloack:
+  clientId: ${CLIENT_ID}

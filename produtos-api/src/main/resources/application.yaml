@@ -1,0 +1,29 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: produtos-api
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+#          issuer-uri: ${KEYCLOACK_URL}
+          jwk-set-uri: ${JWK_URI}
+  kafka:
+    bootstrap-servers:
+      - ${KAFKA_URL}
+keycloack:
+  clientId: ${CLIENT_ID}
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: ${EUREKA_URL}
+    fetch-registry: true
+    register-with-eureka: true

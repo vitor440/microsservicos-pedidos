@@ -7,11 +7,14 @@ import com.produtos.model.Produto;
 import com.produtos.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,17 @@ public class ProdutoService {
     public ProdutoResponse getById(Long id) {
         Produto produto = getProduto(id);
         return mapper.toDTO(produto);
+    }
+
+    public List<ProdutoResponse> getProdutos(List<Long> ids) {
+        List<Produto> produtos = new ArrayList<>();
+
+        for(Long id : ids) {
+            Produto produto = getProduto(id);
+            produtos.add(produto);
+        }
+
+        return produtos.stream().map(mapper::toDTO).toList();
     }
 
     @Transactional

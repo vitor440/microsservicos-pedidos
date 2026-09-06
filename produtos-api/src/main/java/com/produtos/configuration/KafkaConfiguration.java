@@ -1,7 +1,6 @@
-package com.pedido.configuration;
+package com.produtos.configuration;
 
 import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +29,14 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic estatisticaProdutoTopic() {
-        return new NewTopic("pedido-criado", 2, (short) 1);
+    public NewTopic topic() {
+        return new NewTopic("pedido-sucesso", 2, (short) 1);
     }
+
+    @Bean
+    public NewTopic topic2() {
+        return new NewTopic("pedido-erro", 2, (short) 1);
+    }
+
+
 }

@@ -1,10 +1,13 @@
 package com.pedido.model;
 
+import com.pedido.dto.request.ItemRequest;
+import com.pedido.dto.request.PedidoEvent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,4 +38,12 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     List<Item> itens;
+
+
+    public PedidoEvent convertToPedidoEvent() {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<ItemRequest> itensRequests = this.itens.stream().map(item -> new ItemRequest(item.getProdutoId(), item.getQuantidade())).toList();
+        PedidoEvent pedidoEvent = new PedidoEvent(this.id, id, itensRequests);
+        return pedidoEvent;
+    }
 }

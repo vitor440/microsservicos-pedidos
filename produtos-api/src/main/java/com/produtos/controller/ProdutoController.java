@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
@@ -36,6 +37,13 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponse> getById(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(service.getById(id));
+    }
+
+    @GetMapping("/listaProdutos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<ProdutoResponse>> getProdutos(@RequestParam(value = "ids") List<Long> ids) {
+
+        return ResponseEntity.ok(service.getProdutos(ids));
     }
 
     @GetMapping

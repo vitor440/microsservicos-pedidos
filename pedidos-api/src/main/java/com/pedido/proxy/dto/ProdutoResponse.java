@@ -1,6 +1,5 @@
 package com.pedido.proxy.dto;
 
-import com.pedido.dto.request.PedidoEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

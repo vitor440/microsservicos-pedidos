@@ -30,7 +30,12 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic estatisticaProdutoTopic() {
+    public NewTopic pedidoCriadoTopic() {
         return new NewTopic("pedido-criado", 2, (short) 1);
+    }
+
+    @Bean
+    public NewTopic estatisticaProdutoTopic() {
+        return new NewTopic("estatistica-produto", 2, (short) 1);
     }
 }

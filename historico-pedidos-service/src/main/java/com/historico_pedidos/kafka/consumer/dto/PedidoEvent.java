@@ -1,6 +1,5 @@
-package com.pedido.dto.request;
+package com.historico_pedidos.kafka.consumer.dto;
 
-import com.pedido.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +15,5 @@ public class PedidoEvent {
 
     private Long pedidoId;
     private String usuarioId;
-    private List<ItemRequest> itens;
+    private List<ItemDTO> itens;
 }

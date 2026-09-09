@@ -21,7 +21,9 @@ public class HistoricoRequest {
 
     private Long produtoId;
 
-    private Long usuarioId;
+    private String usuarioId;
+
+    private BigDecimal valorUnitario;
 
     private BigDecimal valorTotal;
 

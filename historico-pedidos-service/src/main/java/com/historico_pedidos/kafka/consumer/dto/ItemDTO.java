@@ -1,4 +1,4 @@
-package com.pedido.proxy.dto;
+package com.historico_pedidos.kafka.consumer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,17 +9,15 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class HistoricoRequest {
-
+@NoArgsConstructor
+public class ItemDTO {
 
     private Long produtoId;
 
-    private Long usuarioId;
+    private BigDecimal precoUnitario;
 
-    private BigDecimal valorTotal;
+    private BigDecimal precoTotal;
 
     private Integer quantidade;
-
 }

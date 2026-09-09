@@ -146,6 +146,52 @@ services:
         condition: service_started
       eureka-server:
         condition: service_started
+   
+  mysql-historico:
+    container_name: mysql-historico
+    image: mysql:9.7.2
+    restart: always
+    environment:
+      MYSQL_DATABASE: historicodb
+      MYSQL_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3309:3306"
+    #volumes:
+     # - mysql_historico_data:/var/lib/mysql
+    networks:
+      - produtos-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -prootpassword || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+       
+  historico-service:
+    container_name: historico-service
+    image: api-historico/vitoroliveira2026
+    build: ./historico-pedidos-service
+    restart: always
+    environment:
+      DB_URL: jdbc:mysql://mysql-historico:3306/historicodb
+      DB_USERNAME: root
+      DB_PASSWORD: root123
+      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
+      JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
+      KAFKA_URL: kafka:9092
+      CLIENT_ID: client123
+    ports:
+      - 8400:8400
+    networks:
+      - produtos-network
+    depends_on:
+      pedidos-service:
+        condition: service_started
+      produtos-service:
+        condition: service_started
+      mysql-historico:
+        condition: service_healthy
 
   gateway:
     container_name: api-gateway
@@ -175,3 +221,4 @@ networks:
 volumes:
   mysql_produtos_data:
   mysql_pedidos_data:
+  #mysql_historico_data:

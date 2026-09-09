@@ -1,17 +1,23 @@
-package com.pedido.proxy.dto;
+package com.pedido.kafka.consumer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProdutoReservaRequest {
+public class ItemDTO {
 
     private Long produtoId;
+
+    private BigDecimal precoUnitario;
+
+    private BigDecimal precoTotal;
 
     private Integer quantidade;
 }

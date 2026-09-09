@@ -2,13 +2,10 @@ package com.pedido.service;
 
 import com.pedido.dto.request.ItemRequest;
 import com.pedido.dto.response.PedidoResponse;
-import com.pedido.mapper.ItemMapper;
 import com.pedido.mapper.PedidoMapper;
 import com.pedido.model.Item;
 import com.pedido.model.Pedido;
 import com.pedido.proxy.ProdutoReservaClient;
-import com.pedido.proxy.dto.HistoricoRequest;
-import com.pedido.proxy.dto.ProdutoReservaRequest;
 import com.pedido.proxy.dto.ProdutoResponse;
 import com.pedido.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
@@ -66,6 +63,7 @@ public class PedidoService {
         PedidoResponse response = pedidoMapper.toDTO(repository.save(pedido));
         String message = objectMapper.writeValueAsString(pedido.convertToPedidoEvent());
         kafkaTemplate.send("pedido-criado", message);
+        kafkaTemplate.send("estatistica-produto", message);
         return response;
     }
 
@@ -73,57 +71,4 @@ public class PedidoService {
         return repository.findById(id).orElse(null);
     }
 }
-
-//@Transactional
-//public PedidoResponse salvarPedido(List<ItemRequest> requests) {
-//
-//    Double valorTotal = 0.0;
-//    Pedido pedido = new Pedido();
-//    String usuarioId = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//    pedido.setStatus("PENDENTE");
-//    pedido.setDataCompra(LocalDate.now());
-//    pedido.setUsuarioId(usuarioId);
-//
-//    List<Item> itens = requests.stream().map(itemMapper::toEntity).toList();
-//    itens.forEach(item1 -> {
-//        item1.setPedido(pedido);
-//        item1.setPrecoUnitario(BigDecimal.valueOf(1000.00));
-//        item1.setProdutoId(1L);
-//        item1.setPrecoTotal(BigDecimal.valueOf(2000.00));
-//    });
-//
-//    pedido.setValorTotal(BigDecimal.valueOf(2000.00));
-//    pedido.setItens(itens);
-//
-//    PedidoResponse response = pedidoMapper.toDTO(repository.save(pedido));
-//
-//    List<ProdutoReservaRequest> produtosReserva = requests.stream()
-//            .map(request -> new ProdutoReservaRequest(request.getProdutoId(), request.getQuantidade()))
-//            .toList();
-//
-//    try{
-//        client.create(produtosReserva);
-//
-//        client.confirmarReservas();
-//    }
-//    catch (Exception e) {
-//        try {
-//            client.cancelarReservas();
-//
-//        }
-//        catch (Exception exception) {
-//            throw new RuntimeException(exception.getMessage());
-//        }
-//        throw new RuntimeException(e.getMessage());
-//    }
-//
-//    for(ItemRequest request : requests) {
-//        HistoricoRequest historicoRequest = new HistoricoRequest();
-//    }
-//
-//    String mensagem = objectMapper.writeValueAsString(requests);
-//    kafkaTemplate.send("produto-estatistica", mensagem);
-//    return response;
-//}
 

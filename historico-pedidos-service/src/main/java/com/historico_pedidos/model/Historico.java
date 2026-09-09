@@ -26,7 +26,10 @@ public class Historico {
     private Long produtoId;
 
     @Column(name = "usuario_id")
-    private Long usuarioId;
+    private String usuarioId;
+
+    @Column(name = "valor_unitario")
+    private BigDecimal valorUnitario;
 
     @Column(name = "valor_total")
     private BigDecimal valorTotal;

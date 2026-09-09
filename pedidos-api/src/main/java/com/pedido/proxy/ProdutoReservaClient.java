@@ -1,11 +1,8 @@
 package com.pedido.proxy;
 
 import com.pedido.configuration.FeingConfiguration;
-import com.pedido.proxy.dto.ProdutoReservaRequest;
 import com.pedido.proxy.dto.ProdutoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,12 +1,14 @@
 package com.historico_pedidos.service;
 
-import com.historico_pedidos.dto.request.HistoricoRequest;
-import com.historico_pedidos.mapper.HistoricoMapper;
+import com.historico_pedidos.kafka.consumer.dto.ItemDTO;
+import com.historico_pedidos.kafka.consumer.dto.PedidoEvent;
 import com.historico_pedidos.model.Historico;
 import com.historico_pedidos.repository.HistoricoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -14,13 +16,21 @@ import java.util.List;
 public class HistoricoService {
 
     private final HistoricoRepository repository;
-    private final HistoricoMapper mapper;
 
-    public void salvarHistoricos(List<HistoricoRequest> requests) {
-        List<Historico> list = requests.stream().map(request -> {
-            Historico entity = mapper.toEntity(request);
-            entity
+    public void salvarHistoricos(PedidoEvent event) {
+        List<ItemDTO> itens = event.getItens();
+        List<Historico> historicos = itens.stream().map(item -> {
+            Historico historico = new Historico();
+            historico.setProdutoId(item.getProdutoId());
+            historico.setUsuarioId(event.getUsuarioId());
+            historico.setQuantidade(item.getQuantidade());
+            historico.setValorUnitario(item.getPrecoUnitario());
+            historico.setValorTotal(item.getPrecoUnitario().add(BigDecimal.valueOf(item.getQuantidade())));
+            historico.setDataCompra(LocalDate.now());
+
+            return historico;
         }).toList();
-        repository.saveAll(list);
+
+        repository.saveAll(historicos);
     }
 }

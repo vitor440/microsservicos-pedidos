@@ -1,6 +1,6 @@
-package com.produtos.kafka.dto;
+package com.pedido.kafka.consumer.dto;
 
-
+import com.pedido.dto.request.ItemRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

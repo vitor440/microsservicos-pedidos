@@ -1,7 +1,8 @@
 package com.pedido.model;
 
 import com.pedido.dto.request.ItemRequest;
-import com.pedido.dto.request.PedidoEvent;
+import com.pedido.kafka.consumer.dto.ItemDTO;
+import com.pedido.kafka.consumer.dto.PedidoEvent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,8 +43,8 @@ public class Pedido {
 
     public PedidoEvent convertToPedidoEvent() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<ItemRequest> itensRequests = this.itens.stream().map(item -> new ItemRequest(item.getProdutoId(), item.getQuantidade())).toList();
-        PedidoEvent pedidoEvent = new PedidoEvent(this.id, id, itensRequests);
+        List<ItemDTO> itemDTO = this.itens.stream().map(item -> new ItemDTO(item.getProdutoId(), item.getPrecoUnitario(), item.getPrecoTotal(), item.getQuantidade())).toList();
+        PedidoEvent pedidoEvent = new PedidoEvent(this.id, id, itemDTO);
         return pedidoEvent;
     }
 }

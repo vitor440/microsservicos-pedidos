@@ -1,14 +1,12 @@
 package com.produtos.kafka.consumer;
 
-import com.produtos.dto.request.EstatisticaProdutoRequest;
-import com.produtos.kafka.dto.ItemRequest;
+import com.produtos.kafka.dto.ItemDTO;
 import com.produtos.kafka.dto.PedidoEvent;
 import com.produtos.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -31,9 +29,9 @@ public class PedidoConsumer {
         System.out.println("Mensagem Recebida: " + mensagem);
 
         PedidoEvent event = objectMapper.readValue(mensagem, PedidoEvent.class);
-        List<ItemRequest> itens = event.getItens();
+        List<ItemDTO> itens = event.getItens();
 
-        for (ItemRequest item : itens) {
+        for (ItemDTO item : itens) {
             try {
                 service.decrementar(item.getProdutoId(), item.getQuantidade());
 

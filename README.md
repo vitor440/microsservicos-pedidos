@@ -1,3 +1,5 @@
+<img src="https://img.shields.io/badge/STATUS-CONCLUÍDO-green"/> 
+
 # Projeto de microsserviços spring-boot
 
 ## Sobre o projeto
@@ -69,7 +71,8 @@ A Principal finalidade desse projeto é demonstra o fluxo no momento em que um c
 7. API de Produtos envia o resultado pelo Kafka.
 8. Pedido é atualizado para **FINALIZADO** ou **CANCELADO**.
 
-
+## Segurança
+O Projeto usa fluxo de autenticação authorization code usando keycloak. com um client e roles especificas (ADMIN e USER). cada serviço está configurado para validar e tratar as roles vindas do token jwt.
 
 
 ## Inicialização com docker compose
@@ -162,4 +165,17 @@ host: http://localhost:8300
 | Produtos | `/produtos-api/**` | `lb://produtos-api` | `http://localhost:8300/produtos-api`|
 | Pedidos | `/pedidos-api/**` | `lb://pedidos-api` | `http://localhost:8300/pedidos-api`|
 
+
+### API Historico-service
+porta: 8400\
+host: http://localhost:8400
+
+Responsável apenas por receber um evento kafka e registra o registro de compra no banco de dados.
+
+
+### Eureka Server
+porta: 8761\
+host: http://localhost:8761
+
+Responsável por registrar os endereços dos serviços facilitando a comunicação entre eles.
 

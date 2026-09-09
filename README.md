@@ -127,7 +127,39 @@ Depois disso, o projeto ira subir a aplicação em alguns minutos, A API gateway
 | 3 | 3 | usr_xyz789 | 899.90 | 899.90 | 1 | 2026-03-02 |
 
 
+## Serviços
+
+### API de Produtos
+porta: 8000\
+host: http://localhost:8000
+
+| Método | Endpoint no Gateway | Endpoint Interno | Descrição | Autorização |
+| :---: | :---: | :---: | :---: | :---: |
+| POST | `/produtos-api/produtos` | `/produtos` | Criar produto | ADMIN |
+| GET | `/produtos-api/produtos/{id}` | `/produtos/{id}` | Buscar produto por ID | ADMIN ou USER |
+| GET | `/produtos-api/produtos/listaProdutos?ids={ids}` | `/produtos/listaProdutos?ids={ids}` | Buscar produtos por IDs | ADMIN ou USER |
+| GET | `/produtos-api/produtos` | `/produtos` | Listar produtos | ADMIN ou USER |
+| PATCH | `/produtos-api/produtos/{id}/decrementar?valor={valor}` | `/produtos/{id}/decrementar?valor={valor}` | Decrementar estoque | ADMIN |
+| PATCH | `/produtos-api/produtos/{id}/acrescentar?valor={valor}` | `/produtos/{id}/acrescentar?valor={valor}` | Acrescentar estoque | ADMIN |
+
+---
+
+### API de Pedidos
+porta: 8100\
+host: http://localhost:8100
+
+| Método | Endpoint no Gateway | Endpoint Interno | Descrição | Autorização |
+| :---: | :---: | :---: | :---: | :---: |
+| POST | `/pedidos-api/pedidos` | `/pedidos` | Criar pedido | ADMIN ou USER |
 
 
+### API Gateway
+porta: 8300\
+host: http://localhost:8300
+
+| Serviço | Prefixo no Gateway | Destino | url|
+| :---: | :---: | :---: | :---: |
+| Produtos | `/produtos-api/**` | `lb://produtos-api` | `http://localhost:8300/produtos-api`|
+| Pedidos | `/pedidos-api/**` | `lb://pedidos-api` | `http://localhost:8300/pedidos-api`|
 
 

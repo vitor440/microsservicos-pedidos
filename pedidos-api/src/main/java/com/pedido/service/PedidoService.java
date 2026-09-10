@@ -11,6 +11,9 @@ import com.pedido.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -66,6 +69,17 @@ public class PedidoService {
         kafkaTemplate.send("estatistica-produto", message);
         return response;
     }
+
+    public PedidoResponse getById(Long id) {
+        return pedidoMapper.toDTO(getPedido(id));
+    }
+
+    public Page<PedidoResponse> listar(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(pageable).map(pedidoMapper::toDTO);
+    }
+
+
 
     public Pedido getPedido(Long id) {
         return repository.findById(id).orElse(null);

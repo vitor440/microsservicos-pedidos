@@ -1,4 +1,24 @@
 services:
+  postgres:
+    container_name: postgres-keycloak
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: keycloakdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d keycloakdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - produtos-network
+
   keycloack:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:26.7.2
@@ -8,8 +28,15 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloakdb
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres123
     volumes:
       - ./import:/opt/keycloak/data/import
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - produtos-network
     command:
@@ -77,7 +104,6 @@ services:
       DB_URL: jdbc:mysql://mysql-produtos:3306/produtosdb
       DB_USERNAME: root
       DB_PASSWORD: root123
-      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
       JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
       CLIENT_ID: client123
       EUREKA_URL: http://eureka-server:8761/eureka
@@ -126,7 +152,6 @@ services:
       DB_URL: jdbc:mysql://mysql-pedidos:3306/pedidosdb
       DB_USERNAME: root
       DB_PASSWORD: root123
-      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
       JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
       CLIENT_ID: client123
       EUREKA_URL: http://eureka-server:8761/eureka
@@ -157,8 +182,8 @@ services:
       MYSQL_ROOT_PASSWORD: root123
     ports:
       - "3309:3306"
-    #volumes:
-     # - mysql_historico_data:/var/lib/mysql
+    volumes:
+      - mysql_historico_data:/var/lib/mysql
     networks:
       - produtos-network
     healthcheck:
@@ -177,7 +202,6 @@ services:
       DB_URL: jdbc:mysql://mysql-historico:3306/historicodb
       DB_USERNAME: root
       DB_PASSWORD: root123
-      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
       JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
       KAFKA_URL: kafka:9092
       CLIENT_ID: client123
@@ -199,7 +223,6 @@ services:
     build: ./gateway
     restart: always
     environment:
-      #KEYCLOACK_URL: http://keycloack:8080/realms/produtos-realm
       JWK_URI: http://keycloack:8080/realms/produtos-realm/protocol/openid-connect/certs
       EUREKA_URL: http://eureka-server:8761/eureka
       CLIENT_ID: client123
@@ -221,4 +244,5 @@ networks:
 volumes:
   mysql_produtos_data:
   mysql_pedidos_data:
-  #mysql_historico_data:
+  mysql_historico_data:
+  postgres_data:

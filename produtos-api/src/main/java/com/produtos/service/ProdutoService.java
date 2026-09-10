@@ -34,6 +34,7 @@ public class ProdutoService {
         return mapper.toDTO(produto);
     }
 
+    // Recebe uma lista de id's e retorna uma lista de produtos com os id's equivalentes.
     public List<ProdutoResponse> getProdutos(List<Long> ids) {
         List<Produto> produtos = new ArrayList<>();
 
@@ -48,6 +49,9 @@ public class ProdutoService {
     @Transactional
     public void decrementar(Long id, int valor) {
         Produto produto = getProduto(id);
+
+        if(produto.getQuantidade().equals(0)) throw new RuntimeException("Produto sem estoque!");
+
         produto.setQuantidade(produto.getQuantidade() - valor);
     }
 

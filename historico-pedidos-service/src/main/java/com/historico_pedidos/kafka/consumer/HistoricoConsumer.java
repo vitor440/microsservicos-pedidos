@@ -19,10 +19,9 @@ public class HistoricoConsumer {
     @KafkaListener(id = "estatistica-produto", topics = "estatistica-produto")
     public void salvarHistorico(String message) {
 
-        log.info("salvando historicos");
+        log.info("registrando compra");
         PedidoEvent event = objectMapper.readValue(message, PedidoEvent.class);
-	log.info("mapeamento realizado com sucesso!");
         service.salvarHistoricos(event);
-        log.info("historicos registrados com sucesso!");
+        log.info("compra registrada com sucesso!");
     }
 }

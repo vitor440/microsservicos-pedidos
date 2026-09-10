@@ -45,7 +45,8 @@ public class PedidoService {
         List<ProdutoResponse> produtos = client.getProdutos(ids);
 
         for (ItemRequest request : requests) {
-            ProdutoResponse produto = produtos.stream().findFirst().filter(p -> p.getId() == request.getProdutoId()).get();
+            ProdutoResponse produto = produtos.stream().filter(p -> p.getId().equals(request.getProdutoId()))
+                    .findFirst().orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
             Item item = new Item();
             item.setProdutoId(request.getProdutoId());
             item.setQuantidade(request.getQuantidade());

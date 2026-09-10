@@ -25,7 +25,7 @@ public class HistoricoService {
             historico.setUsuarioId(event.getUsuarioId());
             historico.setQuantidade(item.getQuantidade());
             historico.setValorUnitario(item.getPrecoUnitario());
-            historico.setValorTotal(item.getPrecoUnitario().add(BigDecimal.valueOf(item.getQuantidade())));
+            historico.setValorTotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
             historico.setDataCompra(LocalDate.now());
 
             return historico;

@@ -47,5 +47,6 @@ public class PedidoConsumer {
 
         // kafka success
         kafkaTemplate.send("pedido-sucesso", event.getPedidoId().toString());
+        kafkaTemplate.send("estatistica-produto", mensagem);
     }
 }

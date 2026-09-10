@@ -67,7 +67,7 @@ public class PedidoService {
         PedidoResponse response = pedidoMapper.toDTO(repository.save(pedido));
         String message = objectMapper.writeValueAsString(pedido.convertToPedidoEvent());
         kafkaTemplate.send("pedido-criado", message);
-        kafkaTemplate.send("estatistica-produto", message);
+
         return response;
     }
 

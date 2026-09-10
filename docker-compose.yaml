@@ -24,7 +24,7 @@ services:
     image: quay.io/keycloak/keycloak:26.7.2
     restart: always
     ports:
-      - 28080:8080
+      - 8080:8080
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin123

@@ -5,6 +5,12 @@
 ## Sobre o projeto
 Api backend de microsserviços que simula um fluxo de pedidos em um e-commerce. O Projeto conta com uso de tecnologias como kafka para mensageria, eureka server, feing client, api gateway, entre outros
 
+## Demonstração
+
+
+https://github.com/user-attachments/assets/89fd1ed2-439d-47c4-8237-9cdb4775e971
+
+
 
 ## Tecnologias Utilizadas
 * Java

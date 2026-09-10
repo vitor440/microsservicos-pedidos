@@ -19,6 +19,7 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .oauth2Login(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2RS -> oauth2RS.jwt(Customizer.withDefaults()))
                 .authorizeExchange(httpRequest -> {
                     httpRequest.anyExchange().authenticated();

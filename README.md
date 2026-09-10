@@ -117,7 +117,12 @@ Obtenha o `access_token` executando:
 * Client ID: client123
 * Client Secret: **********
 
+<img width="753" height="636" alt="postman-oauth2" src="https://github.com/user-attachments/assets/f2f075c9-9519-4110-85f3-ff3c5d26b757" />
+
+
 4. Depois, é só clicar no botão 'Get New Access Token' que irá abrir a tela de login do keycloak
+
+
 
 ## Inicialização com docker compose
 Para iniciar o projeto localmente, basta ter o docker instalado na máquina e executar o comando:

@@ -9,9 +9,11 @@ Api backend de microsserviços que simula um fluxo de pedidos em um e-commerce. 
 ## Tecnologias Utilizadas
 * Java
 * Spring Boot
+* Spring Cloud
 * JPA / Hibernate
 * Maven
 * MySQL
+* Postgres
 * Keycloak
 * Eureka Server
 * API Gateway
@@ -71,17 +73,59 @@ A Principal finalidade desse projeto é demonstra o fluxo no momento em que um c
 7. API de Produtos envia o resultado pelo Kafka.
 8. Pedido é atualizado para **FINALIZADO** ou **CANCELADO**.
 
-## Segurança
-O Projeto usa fluxo de autenticação authorization code usando keycloak. com um client e roles especificas (ADMIN e USER). cada serviço está configurado para validar e tratar as roles vindas do token jwt.
+## 🔐 Autenticação & Segurança (Keycloak)
+O ecossistema utiliza **Keycloak** para gerenciamento de identidade e emissão de tokens **OAuth2 / OpenID Connect (JWT)**. 
 
+Ao subir o ambiente via `docker-compose up`, o Keycloak é inicializado e provisionado automaticamente com o Realm, Clients e Usuários de teste pré-configurados.
+
+---
+
+### 1. Parâmetros de Conexão
+
+* **Realm:** `produtos-realm`
+* **Token Endpoint:** `http://localhost:8080/realms/produtos-realm/protocol/openid-connect/token`
+* **Client ID:** `client123`
+* **Client Secret:** `**********` 
+* **Grant Type:** `password`
+
+---
+
+### 2. Usuários de Teste Pré-cadastrados
+
+Utilize as credenciais abaixo conforme o fluxo do sistema que deseja testar:
+
+| Perfil / Função | Username | Password | Permissões / Roles |
+| :--- | :--- | :--- | :--- |
+| **Usuário Padrão** | `user` | `user123` | `ROLE_USER` |
+| **Administrador** | `admin` | `admin123` | `ROLE_ADMIN` |
+
+---
+
+### 3. Como Obter e Utilizar o Token JWT no postman
+
+
+
+Obtenha o `access_token` executando:
+
+1. Abra o postman, crie uma request e entre na aba 'Authorization'
+2. Escolha a opção oauth2
+3. preencha os seguintes campos
+* Grant type: Authorization code
+* Callback URL: http://localhost:8080/callback
+* Auth URL: http://localhost:28080/realms/produtos-realm/protocol/openid-connect/auth
+* Access Token URL: http://localhost:28080/realms/produtos-realm/protocol/openid-connect/token
+* Client ID: client123
+* Client Secret: **********
+
+4. Depois, é só clicar no botão 'Get New Access Token' que irá abrir a tela de login do keycloak
 
 ## Inicialização com docker compose
 Para iniciar o projeto localmente, basta ter o docker instalado na máquina e executar o comando:
 
-```
+
 docker compose up --build
 
-```
+
 
 Depois disso, o projeto ira subir a aplicação em alguns minutos, A API gateway estará disponível para teste na porta 3000 (http://localhost:3000)
 
@@ -154,6 +198,8 @@ host: http://localhost:8100
 | Método | Endpoint no Gateway | Endpoint Interno | Descrição | Autorização |
 | :---: | :---: | :---: | :---: | :---: |
 | POST | `/pedidos-api/pedidos` | `/pedidos` | Criar pedido | ADMIN ou USER |
+| GET | `/pedidos-api/pedidos` | `/pedidos` | Listar pedidos | ADMIN ou USER |
+| GET | `/pedidos-api/pedidos/{id}` | `/pedidos/{id}` | Obter pedido | ADMIN ou USER |
 
 
 ### API Gateway
@@ -178,4 +224,17 @@ porta: 8761\
 host: http://localhost:8761
 
 Responsável por registrar os endereços dos serviços facilitando a comunicação entre eles.
+
+
+### Keycloak
+porta: 8080\
+host: http://localhost:8080
+
+Responsável pela autenticação e geração de tokens jwt.
+
+### Kafka
+porta: 9092\
+host: http://localhost:9092
+
+Responsável pela comunicação assincrona(mensageria) entre os microsserviços.
 

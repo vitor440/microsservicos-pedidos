@@ -33,7 +33,8 @@ public class PedidoController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<PedidoResponse>> listar(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                       @RequestParam(value = "size", defaultValue = "100") Integer size) {
-        return ResponseEntity.ok(service.listar(page, size));
+                                                       @RequestParam(value = "size", defaultValue = "100") Integer size,
+                                                       @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
+        return ResponseEntity.ok(service.listar(page, size, direction));
     }
 }

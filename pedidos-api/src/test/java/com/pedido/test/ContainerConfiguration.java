@@ -1,4 +1,4 @@
-package com.pedido.controller.test;
+package com.pedido.test;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import org.springframework.test.context.DynamicPropertyRegistry;

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.*;
 
 @Service
 @RequiredArgsConstructor
@@ -75,8 +78,9 @@ public class PedidoService {
         return pedidoMapper.toDTO(getPedido(id));
     }
 
-    public Page<PedidoResponse> listar(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<PedidoResponse> listar(Integer page, Integer size, String direction) {
+        Direction sort = direction.equalsIgnoreCase("ASC") ? Direction.ASC : Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, sort, "dataCompra");
         return repository.findAll(pageable).map(pedidoMapper::toDTO);
     }
 

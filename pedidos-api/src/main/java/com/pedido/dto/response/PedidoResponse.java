@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,5 +24,7 @@ public class PedidoResponse {
     private String status;
 
     private LocalDate dataCompra;
+
+    private List<ItemResponse> itens;
 }
 

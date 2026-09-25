@@ -22,5 +22,4 @@ public class ProdutoResponse {
 
     private Integer quantidade;
 
-    private Integer quantidadeReserva;
 }

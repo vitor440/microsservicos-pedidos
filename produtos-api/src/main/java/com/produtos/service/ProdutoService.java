@@ -25,7 +25,6 @@ public class ProdutoService {
 
     public ProdutoResponse create(ProdutoRequest request) {
         Produto produto = mapper.toEntity(request);
-        produto.setQuantidadeReserva(0);
         return mapper.toDTO(repository.save(produto));
     }
 

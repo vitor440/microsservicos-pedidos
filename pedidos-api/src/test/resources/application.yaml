@@ -1,0 +1,15 @@
+server:
+  port: 8100
+
+spring:
+  application:
+    name: pedidos-api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    admin:
+      auto-create: false
+      enabled: false
+eureka:
+  client:
+    enabled: false

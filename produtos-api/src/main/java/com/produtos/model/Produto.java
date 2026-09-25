@@ -26,6 +26,4 @@ public class Produto {
 
     private Integer quantidade;
 
-    @Column(name = "quantidade_reserva")
-    private Integer quantidadeReserva;
 }

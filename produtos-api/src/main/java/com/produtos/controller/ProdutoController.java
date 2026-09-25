@@ -52,17 +52,4 @@ public class ProdutoController {
 
         return ResponseEntity.ok(service.list());
     }
-
-    @PatchMapping("/{id}/decrementar")
-    public ResponseEntity<Void> decrementar(@PathVariable("id") Long id, @RequestParam("valor") Integer valor) {
-        service.decrementar(id, valor);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/acrescentar")
-    public ResponseEntity<Void> acrescentar(@PathVariable("id") Long id, @RequestParam("valor") Integer valor) {
-        service.acrescentar(id, valor);
-        return ResponseEntity.noContent().build();
-    }
-
 }

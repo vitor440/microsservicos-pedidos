@@ -1,0 +1,24 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: produtos-api
+  datasource:
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    oauth2:
+      resourceserver:
+        jwt:
+  kafka:
+    admin:
+      enabled: false
+      auto-create: false
+    listener:
+      auto-startup: false
+keycloack:
+  clientId: ${CLIENT_ID}
+eureka:
+  client:
+    enabled: false

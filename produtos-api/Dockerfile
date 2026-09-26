@@ -4,7 +4,7 @@ WORKDIR build
 
 COPY . ./
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 
 FROM amazoncorretto:21.0.12

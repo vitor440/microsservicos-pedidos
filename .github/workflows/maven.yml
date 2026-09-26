@@ -1,10 +1,4 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
 
 name: Java CI with Maven
 
@@ -19,9 +13,36 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+        
+    - name: Login to Docker Hub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
+    - name: build produtos api
+      working-directory: ./produtos-api
+      run: mvn clean package
+
+    - name: build pedidos api
+      working-directory: ./pedidos-api
+      run: mvn clean package
+
+    - name: docker compose build
+      working-directory: ./
+      run: docker compose build
+
+    - name: push to docker hub
+      run: |
+        docker push vitoroliveira2024/eureka_server
+        docker push vitoroliveira2024/api-gateway
+        docker push vitoroliveira2024/produtos_service
+        docker push vitoroliveira2024/pedidos_service
+        docker push vitoroliveira2024/api-historico

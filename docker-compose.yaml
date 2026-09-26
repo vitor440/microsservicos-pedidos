@@ -66,7 +66,7 @@ services:
 
   eureka-server:
     container_name: eureka_server
-    image: eureka_server/vitoroliveira2026
+    image: vitoroliveira2024/eureka_server
     build: ./eureka-server
     restart: always
     ports:
@@ -97,7 +97,7 @@ services:
 
   produtos-service:
     container_name: produtos-service
-    image: produtos_service/vitoroliveira2026
+    image: vitoroliveira2024/produtos_service
     build: ./produtos-api
     restart: always
     environment:
@@ -145,7 +145,7 @@ services:
 
   pedidos-service:
     container_name: pedidos-service
-    image: pedidos_service/vitoroliveira2026
+    image: vitoroliveira2024/pedidos_service
     build: ./pedidos-api
     restart: always
     environment:
@@ -195,7 +195,7 @@ services:
        
   historico-service:
     container_name: historico-service
-    image: api-historico/vitoroliveira2026
+    image: vitoroliveira2024/api-historico
     build: ./historico-pedidos-service
     restart: always
     environment:
@@ -219,7 +219,7 @@ services:
 
   gateway:
     container_name: api-gateway
-    image: api-gateway/vitoroliveira2026
+    image: vitoroliveira2024/api-gateway
     build: ./gateway
     restart: always
     environment:

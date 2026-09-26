@@ -218,7 +218,7 @@ services:
         condition: service_healthy
 
   gateway:
-    container_name: api-gateway
+    container_name: gateway
     image: vitoroliveira2024/api-gateway
     build: ./gateway
     restart: always
